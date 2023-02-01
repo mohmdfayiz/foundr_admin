@@ -1,3 +1,4 @@
+import React from "react";
 import {
     Card,
     CardActions,
@@ -18,21 +19,21 @@ import {
         <CardMedia
           component="img"
           alt="Cover image"
-          height="140"
+          height="160"
           image={coverImg}
         />
         <CardContent>
-          <Typography variant="h6" fontWeight={'bold'} color={colors.grey[400]}>
+          <Typography variant="h6" fontWeight={'bold'} color={colors.grey[200]}>
             {speaker}
           </Typography>
           <Typography gutterBottom variant="h4" component="div">
             {topic}
           </Typography>
-          <Typography variant="body2" color={colors.grey[400]}>
-            {date}
+          <Typography variant="body2" color={colors.grey[400]} display={'flex'} alignItems={'center'}>
+            <img src="/assets/schedule.png" alt="calendar icon" width={20} style={{marginRight:'5px'}}/>{date +" , "+time}
           </Typography>
-          <Typography variant="body2" color={colors.grey[400]}>
-            {venue} {venue === "Discord" &&  <img src="/public/assets/discord.png" alt="icon"/> }
+          <Typography variant="body2" color={colors.grey[400]} display={'flex'} alignItems={'center'} mt={'10px'}>
+            {venue === "Discord" &&  <img src="/assets/discord.png" alt="Discord icon" width={20} style={{marginRight:'5px'}}/>} {venue}
           </Typography>
         </CardContent>
         <CardActions>

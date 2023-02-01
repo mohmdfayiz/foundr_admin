@@ -30,3 +30,7 @@ body,
   background:#555;
 }
 
+.inputField:focus{
+  outline: rgb(26, 170, 218);
+}
+
