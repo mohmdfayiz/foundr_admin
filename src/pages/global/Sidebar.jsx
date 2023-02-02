@@ -12,6 +12,7 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import LiveTvOutlinedIcon from '@mui/icons-material/LiveTvOutlined';
+import KeyboardOutlinedIcon from '@mui/icons-material/KeyboardOutlined';
 // import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 // import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 // import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
@@ -127,6 +128,13 @@ const Sidebar = () => {
               title="Articles"
               to="/articles"
               icon={<ArticleOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Text Editor"
+              to="/editor"
+              icon={<KeyboardOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />

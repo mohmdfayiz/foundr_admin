@@ -1,5 +1,8 @@
 import { createContext, useState, useMemo } from "react";
-import { createTheme } from "@mui/material/styles";
+import { createTheme, styled } from "@mui/material/styles";
+import { Button, colors } from "@mui/material";
+import { borderRadius } from "@mui/system";
+import { hover } from "@testing-library/user-event/dist/hover";
 
 export const tokens = (mode) => ({
     ...(mode === 'dark' ?
@@ -127,6 +130,13 @@ export const tokens = (mode) => ({
     }
     )
 })
+
+export const MyButton = styled(Button)(()=>({
+    backgroundColor:"blueviolet",
+    color: "whitesmoke",
+    borderRadius: '10px',
+    backgroundBlendMode:"lighten"
+}))
 
 export const themeSettings = (mode) => {
     const colors = tokens(mode);
