@@ -1,20 +1,45 @@
-import React,{useState} from "react";
-import { 
+import React, { useState } from "react";
+import {
   Box,
-  Button, 
-  TextField, 
-  Dialog, 
-  DialogActions, 
-  DialogContent, 
-  DialogContentText, 
-  DialogTitle
- } from '@mui/material'
-import Header from '../../components/Header'
-import EventCard from '../../components/EventCard'
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Select,
+  useTheme,
+  MenuItem,
+} from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import dayjs from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import Header from "../../components/Header";
+import EventCard from "../../components/EventCard";
+import { tokens } from "../../theme";
+import converToBase64 from "../../helper/convert";
+import { useFormik } from "formik";
+import {toast, Toaster} from "react-hot-toast"
+import { validateEvent } from "../../helper/validate";
+import { hostEvent } from "../../helper/helper";
 
 const Events = () => {
-
   const [open, setOpen] = useState(false);
+  const [date, setDate] = useState(dayjs());
+  const [venue, setVenue] = useState("");
+  const [mentorImage, setMentorImage] = useState("");
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
+  const onUploadMentor = async (e) => {
+    const base64 = await converToBase64(e.target.files[0]);
+    setMentorImage(base64);
+  };
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -22,59 +47,166 @@ const Events = () => {
     setOpen(false);
   };
 
+  const handleChange = (event) => {
+    setVenue(event.target.value);
+  };
+
+  const formik = useFormik({
+    initialValues:{
+      mentorName:'',
+      title:'',
+      description:'',
+    },
+    validate:validateEvent,
+    validateOnBlur:false,
+    validateOnChange:false,
+    onSubmit:async values =>{
+      values = Object.assign(values,{montorImage:mentorImage},{venue:venue},{dateAndTime:date})
+      let eventPromise = hostEvent(values);
+        toast.promise(eventPromise,{
+        loading:'Loading...',
+        success: "Hosted successfully.",
+        error: "Could not host..!"
+      })
+    }
+  })
+
   return (
     <Box m={"20px"}>
-      <Header title={"Events"} subtitle={"Let's Inspire people."}/>
-      <Button variant="contained" onClick={handleClickOpen}>Host A New Event</Button>
-      <Box mt={"40px"} display='flex' flexWrap={'wrap'} justifyContent={'space-evenly'}>
-        <EventCard speaker={'Anna marry'} topic={'Should you start a startup?'} coverImg={'/assets/pexels-igreja-dimensão-10401268.jpg'} date={"25-01-2022"} time={'10:00 AM'} venue={'Discord'}/>
-        <EventCard speaker={'Anna marry'} topic={'Should you start a startup?'} coverImg={'/assets/pexels-igreja-dimensão-10401268.jpg'} date={"25-01-2022"} time={'10:00 AM'} venue={'Discord'}/>
-        <EventCard speaker={'Anna marry'} topic={'Should you start a startup?'} coverImg={'/assets/pexels-igreja-dimensão-10401268.jpg'} date={"25-01-2022"} time={'10:00 AM'} venue={'Discord'}/>
+      <Toaster position='top-right' reverseOrder='false' />
+      <Header title={"Events"} subtitle={"Let's Inspire people."} />
+      <Button
+        variant="filled"
+        sx={{ background: colors.primary[400] }}
+        onClick={handleClickOpen}
+      >
+        Host A New Event
+      </Button>
+      <Box
+        mt={"40px"}
+        display="flex"
+        flexWrap={"wrap"}
+        justifyContent={"space-evenly"}
+      >
+        <EventCard
+          speaker={"Anna marry"}
+          topic={"Should you start a startup?"}
+          coverImg={"assets/pexels-igreja-dimensão-10401268.jpg"}
+          date={"25-01-2022"}
+          time={"10:00 AM"}
+          venue={"Discord"}
+        />
       </Box>
 
-
-      <Dialog open={open} maxWidth={'lg'}>
-        <DialogTitle sx={{fontWeight:"bold"}}>New Event</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Fill all the fields below.
-          </DialogContentText>
+      <Dialog open={open} maxWidth={"lg"} component={"form"} onSubmit={formik.handleSubmit}>
+        <DialogTitle
+          sx={{ fontWeight: "bold", background: colors.primary[400] }}
+        >
+          New Event
+        </DialogTitle>
+        <DialogContent sx={{ background: colors.primary[400] }}>
+          <DialogContentText>Fill all the fields below.</DialogContentText>
           <TextField
             autoFocus
             margin="dense"
-            id="name"
+            label="Name of Mentor"
+            type="text"
+            fullWidth
+            variant="standard"
+            {...formik.getFieldProps('mentorName')}
+          />
+          <TextField
+            autoFocus
+            margin="dense"
             label="Title of Event"
             type="text"
             fullWidth
             variant="standard"
+            {...formik.getFieldProps('title')}
           />
           <TextField
             autoFocus
             margin="dense"
-            id="name"
             label="Description"
             type="text"
             fullWidth
             variant="standard"
+            {...formik.getFieldProps('description')}
           />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Mentor"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
+          
+          <Box display={"inline-flex"} my={1}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                disablePast={true}
+                closeOnSelect={false}
+                renderInput={(props) => <TextField {...props} />}
+                inputProps={{ "aria-label": "Without label" }}
+                value={date}
+                onChange={(newValue) => {
+                  setDate(newValue);
+                }}
+              />
+            </LocalizationProvider>
+            <Select
+              sx={{ minWidth: 120, ml: 2 }}
+              displayEmpty
+              value={venue}
+              inputProps={{ "aria-label": "Without label" }}
+              onChange={handleChange}
+            >
+              <MenuItem value="">
+                <em>Venue</em>
+              </MenuItem>
+              <MenuItem value={"Discord"}>Discord</MenuItem>
+              <MenuItem value={"Google Meet"}>Google Meet</MenuItem>
+              <MenuItem value={"Zoom"}>Zoom</MenuItem>
+            </Select>
+          </Box>
+          <Box>
+            <Button
+              variant="contained"
+              sx={{ mr: 2 }}
+              component="label"
+              startIcon={<PersonIcon />}
+            >
+              Upload an image of Mentor
+              <input
+                hidden
+                accept="image/*"
+                type="file"
+                onChange={onUploadMentor}
+              />
+            </Button>
+            
+            {mentorImage && (
+              <img
+                src={mentorImage}
+                style={{ marginLeft: "10px" }}
+                width={100}
+                alt="mentorImage"
+              />
+            )}
+          </Box>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
+        <DialogActions sx={{ background: colors.primary[400] }}>
+          <Button
+            variant="filled"
+            sx={{ color: "blue", fontWeight: "bold" }}
+            onClick={handleClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="filled"
+            sx={{ color: "blue", fontWeight: "bold" }}
+            type="submit"
+          >
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
-
     </Box>
-  )
-}
+  );
+};
 
-export default Events
+export default Events;
