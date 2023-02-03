@@ -38,6 +38,7 @@ function Editor() {
     setFile(base64);
   };
 
+
   const formik = useFormik({
     initialValues:{
       title:'',

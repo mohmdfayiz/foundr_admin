@@ -21,6 +21,7 @@ function App() {
       if (user) {
         // const uid = user.uid;
         console.log("----- User is signed in -----");
+        navigate('/dashboard',{replace:true})
         return dispatch(setAuthorized());
       } else {
         console.log("----- User is signed out -----");

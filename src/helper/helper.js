@@ -5,7 +5,7 @@ import axios from "axios";
 // PUBLISH ARTICLES
 export async function publishArticle(article){
     try {
-        const { data:{message}, status } = await axios.post( '/publishArticle', article );
+        const { data:{message}, status } = await axios.post( 'http://localhost:8000/api/admin/publishArticle', article );
 
         if(status === 201) return Promise.resolve(message)
         

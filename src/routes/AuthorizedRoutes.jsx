@@ -1,5 +1,4 @@
 import React from 'react'
-import { Calendar } from '@fullcalendar/core'
 import { Route, Routes } from 'react-router-dom'
 import Dashboard from '../pages/dashboard/Dashboard'
 import Articles from '../pages/articles/Articles'
@@ -9,6 +8,7 @@ import Sidebar from '../pages/global/Sidebar'
 import Topbar from '../pages/global/Topbar'
 import Users from '../pages/users/Users'
 import Editor from '../pages/articles/Editor'
+import Calendar from '../pages/calendar/Calendar'
 
 export default function AuthorizedRoutes(){
   return (
