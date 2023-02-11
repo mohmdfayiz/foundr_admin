@@ -1,79 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
-  TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Select,
   useTheme,
-  MenuItem,
 } from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
-import dayjs from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import Header from "../../components/Header";
 import EventCard from "../../components/EventCard";
 import { tokens } from "../../theme";
-import converToBase64 from "../../helper/convert";
-import { useFormik } from "formik";
-import {toast, Toaster} from "react-hot-toast"
-import { validateEvent } from "../../helper/validate";
-import { hostEvent } from "../../helper/helper";
+import { getEvents } from "../../helper/helper";
+import { Toaster } from "react-hot-toast";
+import { NewEvent } from "./NewEvent";
+import {useSelector, useDispatch } from "react-redux";
+import { setShow } from "../../features/eventModal/modalSlice"
 
 const Events = () => {
-  const [open, setOpen] = useState(false);
-  const [date, setDate] = useState(dayjs());
-  const [venue, setVenue] = useState("");
-  const [mentorImage, setMentorImage] = useState("");
 
+  // const [open, setOpen] = useState(false);
+  const [events, setEvents] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const dispatch = useDispatch()
+  const {show} = useSelector((state)=>state.showModal)
 
-  const onUploadMentor = async (e) => {
-    const base64 = await converToBase64(e.target.files[0]);
-    setMentorImage(base64);
-  };
+  useEffect(() => { 
+    getEvents().then(data =>  setEvents(data)
+    )},[]);
+
 
   const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
+    dispatch(setShow())
   };
 
-  const handleChange = (event) => {
-    setVenue(event.target.value);
-  };
 
-  const formik = useFormik({
-    initialValues:{
-      mentorName:'',
-      title:'',
-      description:'',
-    },
-    validate:validateEvent,
-    validateOnBlur:false,
-    validateOnChange:false,
-    onSubmit:async values =>{
-      values = Object.assign(values,{montorImage:mentorImage},{venue:venue},{dateAndTime:date})
-      let eventPromise = hostEvent(values);
-        toast.promise(eventPromise,{
-        loading:'Loading...',
-        success: "Hosted successfully.",
-        error: "Could not host..!"
-      })
-    }
-  })
 
   return (
     <Box m={"20px"}>
-      <Toaster position='top-right' reverseOrder='false' />
+      <Toaster position="top-right" reverseOrder="false" />
       <Header title={"Events"} subtitle={"Let's Inspire people."} />
       <Button
         variant="filled"
@@ -88,123 +50,22 @@ const Events = () => {
         flexWrap={"wrap"}
         justifyContent={"space-evenly"}
       >
-        <EventCard
-          speaker={"Anna marry"}
-          topic={"Should you start a startup?"}
-          coverImg={"assets/pexels-igreja-dimensão-10401268.jpg"}
-          date={"25-01-2022"}
-          time={"10:00 AM"}
-          venue={"Discord"}
-        />
+        {events.map((event) => {
+          return (
+            <EventCard
+              key={event?._id}
+              speaker={event?.mentorName}
+              topic={event?.title}
+              coverImg={event?.mentorImage}
+              date={event?.dateAndTime}
+              venue={event?.venue}
+            />
+          );
+        })}
       </Box>
 
-      <Dialog open={open} maxWidth={"lg"} component={"form"} onSubmit={formik.handleSubmit}>
-        <DialogTitle
-          sx={{ fontWeight: "bold", background: colors.primary[400] }}
-        >
-          New Event
-        </DialogTitle>
-        <DialogContent sx={{ background: colors.primary[400] }}>
-          <DialogContentText>Fill all the fields below.</DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Name of Mentor"
-            type="text"
-            fullWidth
-            variant="standard"
-            {...formik.getFieldProps('mentorName')}
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Title of Event"
-            type="text"
-            fullWidth
-            variant="standard"
-            {...formik.getFieldProps('title')}
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Description"
-            type="text"
-            fullWidth
-            variant="standard"
-            {...formik.getFieldProps('description')}
-          />
-          
-          <Box display={"inline-flex"} my={1}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateTimePicker
-                disablePast={true}
-                closeOnSelect={false}
-                renderInput={(props) => <TextField {...props} />}
-                inputProps={{ "aria-label": "Without label" }}
-                value={date}
-                onChange={(newValue) => {
-                  setDate(newValue);
-                }}
-              />
-            </LocalizationProvider>
-            <Select
-              sx={{ minWidth: 120, ml: 2 }}
-              displayEmpty
-              value={venue}
-              inputProps={{ "aria-label": "Without label" }}
-              onChange={handleChange}
-            >
-              <MenuItem value="">
-                <em>Venue</em>
-              </MenuItem>
-              <MenuItem value={"Discord"}>Discord</MenuItem>
-              <MenuItem value={"Google Meet"}>Google Meet</MenuItem>
-              <MenuItem value={"Zoom"}>Zoom</MenuItem>
-            </Select>
-          </Box>
-          <Box>
-            <Button
-              variant="contained"
-              sx={{ mr: 2 }}
-              component="label"
-              startIcon={<PersonIcon />}
-            >
-              Upload an image of Mentor
-              <input
-                hidden
-                accept="image/*"
-                type="file"
-                onChange={onUploadMentor}
-              />
-            </Button>
-            
-            {mentorImage && (
-              <img
-                src={mentorImage}
-                style={{ marginLeft: "10px" }}
-                width={100}
-                alt="mentorImage"
-              />
-            )}
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ background: colors.primary[400] }}>
-          <Button
-            variant="filled"
-            sx={{ color: "blue", fontWeight: "bold" }}
-            onClick={handleClose}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="filled"
-            sx={{ color: "blue", fontWeight: "bold" }}
-            type="submit"
-          >
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <NewEvent show={show}/>
+
     </Box>
   );
 };

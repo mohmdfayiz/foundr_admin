@@ -10,12 +10,12 @@ import {
   } from "@mui/material";
   import { tokens } from "../theme";
   
-  const EventCard = ({ coverImg, speaker, topic, date, time, venue}) => {
+  const EventCard = ({ coverImg, speaker, topic, date, venue, key}) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
   
     return (
-      <Card sx={{ maxWidth: 300, m:"5px"}} style={{backgroundColor:colors.primary[400]}}>
+      <Card key={key} sx={{ width: 300, m:"5px"}} style={{backgroundColor:colors.primary[400]}}>
         <CardMedia
           component="img"
           alt="Cover image"
@@ -30,7 +30,7 @@ import {
             {topic}
           </Typography>
           <Typography variant="body2" color={colors.grey[400]} display={'flex'} alignItems={'center'}>
-            <img src="/assets/schedule.png" alt="calendar icon" width={20} style={{marginRight:'5px'}}/>{date +" , "+time}
+            <img src="/assets/schedule.png" alt="calendar icon" width={20} style={{marginRight:'5px'}}/>{date}
           </Typography>
           <Typography variant="body2" color={colors.grey[400]} display={'flex'} alignItems={'center'} mt={'10px'}>
             {venue === "Discord" &&  <img src="/assets/discord.png" alt="Discord icon" width={20} style={{marginRight:'5px'}}/>} {venue}

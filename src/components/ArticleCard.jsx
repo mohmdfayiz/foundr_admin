@@ -15,7 +15,7 @@ const ArticleCard = ({ coverImg, heading, date }) => {
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Card sx={{ maxWidth: 300, m:"5px"}} style={{backgroundColor:colors.primary[400]}}>
+    <Card sx={{ width: 300, m:"5px"}} style={{backgroundColor:colors.primary[400]}}>
       <CardMedia
         component="img"
         alt="Cover image"
