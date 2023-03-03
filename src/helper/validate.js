@@ -8,7 +8,7 @@ export async function validateArticle(values){
 }
 
 export async function validateEvent(values){
-    const errors = eventTitleVerify({},values) && eventDescriptionVerify({},values) && mentorNameVerify({},values)
+    const errors = eventTitleVerify({},values) && eventDescriptionVerify({},values) && joinLinkVerify({},values) && mentorNameVerify({},values)
 
     return errors
 }
@@ -71,8 +71,17 @@ function eventDescriptionVerify(error={},values){
 function mentorNameVerify(error={},values){
     if(!values.mentorName){
         error.mentorName = toast.error("Mentor name is required..!")
-    }if(values.mentorName.length < 3){
+    }else if(values.mentorName.length < 3){
         error.mentorName = toast.error("Invalid Mentor name..!")
+    }
+    return error
+}
+
+function joinLinkVerify(error={},values){
+    if(!values.joinLink){
+        error.joinLink = toast.error("Join link is required..!")
+    }else if(values.joinLink.length < 10){
+        error.joinLink = toast.error("Invalid Link ..!")
     }
     return error
 }

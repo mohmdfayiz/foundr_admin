@@ -11,6 +11,8 @@ import {
   Select,
   useTheme,
   MenuItem,
+  OutlinedInput,
+  InputAdornment,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import dayjs from "dayjs";
@@ -36,8 +38,6 @@ export const NewEvent = () => {
 
   const dispatch = useDispatch()
   const {show} = useSelector((state)=>state.showModal)
-  console.log(show);
-
 
   const onUploadMentor = async (e) => {
     const base64 = await converToBase64(e.target.files[0]);
@@ -57,6 +57,8 @@ export const NewEvent = () => {
       mentorName: "",
       title: "",
       description: "",
+      joinLink: "",
+      enrollmentFee: ""
     },
     validate: validateEvent,
     validateOnBlur: false,
@@ -64,7 +66,7 @@ export const NewEvent = () => {
     onSubmit: async (values) => {
       values = Object.assign(
         values,
-        { montorImage: mentorImage },
+        { mentorImage: mentorImage },
         { venue: venue },
         { dateAndTime: date }
       );
@@ -80,7 +82,7 @@ export const NewEvent = () => {
   return (
     <Dialog
         open={show}
-        maxWidth={"lg"}
+        maxWidth={"md"}
         component={"form"}
         onSubmit={formik.handleSubmit}
       >
@@ -118,8 +120,17 @@ export const NewEvent = () => {
             variant="standard"
             {...formik.getFieldProps("description")}
           />
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Join Link"
+            type="text"
+            fullWidth
+            variant="standard"
+            {...formik.getFieldProps("joinLink")}
+          />
 
-          <Box display={"inline-flex"} my={1}>
+          <Box display={"inline-flex"} gap={'10px'} my={1}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateTimePicker
                 disablePast={true}
@@ -133,7 +144,7 @@ export const NewEvent = () => {
               />
             </LocalizationProvider>
             <Select
-              sx={{ minWidth: 120, ml: 2 }}
+              sx={{ minWidth: 120 }}
               displayEmpty
               value={venue}
               inputProps={{ "aria-label": "Without label" }}
@@ -146,6 +157,13 @@ export const NewEvent = () => {
               <MenuItem value={"Google Meet"}>Google Meet</MenuItem>
               <MenuItem value={"Zoom"}>Zoom</MenuItem>
             </Select>
+
+            <OutlinedInput
+            id="enrollmentFee"
+            type="number"
+            {...formik.getFieldProps("enrollmentFee")}
+            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+          />
           </Box>
           <Box>
             <Button

@@ -1,53 +1,81 @@
-import React from "react";
-import { Box, Typography, useTheme } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Button, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataUsers } from "../../data/mockData";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import Header from "../../components/Header";
+import { getUsers, updateUserStatus } from "../../helper/helper";
+import { toast } from "react-hot-toast";
 
 const Users = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [users, setUsers] = useState([]);
+  const [action, setAction] = useState(false);
+
+  const handleUpdateStatus = async (userId) => {
+    const { status } = await updateUserStatus(userId);
+    console.log(status);
+    status === 200
+      ? toast.success("Status updated!")
+      : toast.error("Something went wrong!");
+    setAction(!action);
+  };
+
+  useEffect(() => {
+    getUsers().then(({ data }) => {
+      setUsers(data);
+    });
+  }, [action]);
 
   const columns = [
-    { field: "id", headerName: "ID" },
+    { field: "_id", headerName: "ID", flex: 1 },
     {
-      field: "name",
-      headerName: "Full Name",
+      field: "userName",
+      headerName: "User Name",
       cellClassName: "name-column--cell",
       flex: 1,
     },
     { field: "email", headerName: "Email", flex: 1 },
-    { field: "location", headerName: "Location", flex: 1 },
+    {
+      field: "location",
+      headerName: "Location",
+      valueGetter: (params) => {
+        return params.row.location?.country;
+      },
+      flex: 1,
+    },
     {
       field: "status",
       headerName: "Status",
       flex: 1,
-      renderCell: ({ row: { status } }) => {
+      renderCell: (params) => {
         return (
-          <Box
-            width={"60%"}
-            m="0 auto"
-            p="5px"
-            display={"flex"}
-            justifyContent="center"
-            backgroundColor={
-              status === "Active"
-                ? colors.greenAccent[600]
-                : colors.redAccent[600]
-            }
-            borderRadius="4px"
-          >
-            {status === "Active" ? (
-              <CheckCircleOutlinedIcon />
+          <Box>
+            {params.row.status === "Active" ? (
+              <Button
+                onClick={() => {
+                  handleUpdateStatus(params.row._id);
+                }}
+                sx={{ backgroundColor: colors.greenAccent[500] }}
+                variant="contained"
+              >
+                <CheckCircleOutlinedIcon />
+                {params.row.status}
+              </Button>
             ) : (
-              <HighlightOffOutlinedIcon />
+              <Button
+                onClick={() => {
+                  handleUpdateStatus(params.row._id);
+                }}
+                sx={{ backgroundColor: colors.redAccent[500] }}
+                variant="contained"
+              >
+                <HighlightOffOutlinedIcon />
+                {params.row.status}
+              </Button>
             )}
-            <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-              {status}
-            </Typography>
           </Box>
         );
       },
@@ -86,7 +114,7 @@ const Users = () => {
           // },
         }}
       >
-        <DataGrid rows={mockDataUsers} columns={columns} />
+        <DataGrid rows={users} columns={columns} getRowId={(e) => e._id} />
       </Box>
     </Box>
   );

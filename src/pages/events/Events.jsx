@@ -1,41 +1,36 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  useTheme,
-} from "@mui/material";
+import { Box, Button, useTheme } from "@mui/material";
 import Header from "../../components/Header";
 import EventCard from "../../components/EventCard";
 import { tokens } from "../../theme";
 import { getEvents } from "../../helper/helper";
-import { Toaster } from "react-hot-toast";
 import { NewEvent } from "./NewEvent";
-import {useSelector, useDispatch } from "react-redux";
-import { setShow } from "../../features/eventModal/modalSlice"
+import { useSelector, useDispatch } from "react-redux";
+import { setShow } from "../../features/eventModal/modalSlice";
+import LoadingSkeleton from "../../components/LoadingSkeleton";
 
 const Events = () => {
-
-  // const [open, setOpen] = useState(false);
-  const [events, setEvents] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const dispatch = useDispatch()
-  const {show} = useSelector((state)=>state.showModal)
-
-  useEffect(() => { 
-    getEvents().then(data =>  setEvents(data)
-    )},[]);
-
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { show } = useSelector((state) => state.showModal);
+ 
+  useEffect(() => {
+    setLoading(true);
+    getEvents().then((data) => {
+      setLoading(false);
+      setEvents(data);
+    });
+  }, []);
 
   const handleClickOpen = () => {
-    dispatch(setShow())
+    dispatch(setShow());
   };
-
-
 
   return (
     <Box m={"20px"}>
-      <Toaster position="top-right" reverseOrder="false" />
       <Header title={"Events"} subtitle={"Let's Inspire people."} />
       <Button
         variant="filled"
@@ -50,22 +45,16 @@ const Events = () => {
         flexWrap={"wrap"}
         justifyContent={"space-evenly"}
       >
-        {events.map((event) => {
-          return (
-            <EventCard
-              key={event?._id}
-              speaker={event?.mentorName}
-              topic={event?.title}
-              coverImg={event?.mentorImage}
-              date={event?.dateAndTime}
-              venue={event?.venue}
-            />
-          );
-        })}
+        {loading ? (
+          <LoadingSkeleton/>
+        ) : (
+          events.map((event, index) => {
+            return <EventCard key={index} event={event} />;
+          })
+        )}
       </Box>
 
-        <NewEvent show={show}/>
-
+      <NewEvent show={show} />
     </Box>
   );
 };

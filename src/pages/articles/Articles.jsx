@@ -1,34 +1,48 @@
-import React,{useEffect, useState} from "react";
-import { Box } from '@mui/material'
-import Header from '../../components/Header'
-import ArticleCard from '../../components/ArticleCard'
+import React, { useEffect, useState } from "react";
+import { Box } from "@mui/material";
+import Header from "../../components/Header";
+import ArticleCard from "../../components/ArticleCard";
 import { getArticles } from "../../helper/helper";
+import LoadingSkeleton from "../../components/LoadingSkeleton";
 
 const Articles = () => {
+  const [articles, setArticles] = useState([]);
+  const [action, setAction] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [articles, setArticles] = useState([])
-
-  useEffect(()=>{
-    getArticles().then(data => {
-      setArticles(data)
+  useEffect(() => {
+    setLoading(true);
+    getArticles().then((data) => {
+      setLoading(false);
+      setArticles(data);
     });
-  },[])
+  }, [action]);
 
   return (
     <Box m={"20px"}>
-      <Header title={"Articles"} subtitle={"Head into daily articles"}/>
+      <Header title={"Articles"} subtitle={"Head into daily articles"} />
 
-      <Box mt={"40px"} display='flex' flexWrap={'wrap'} justifyContent={'space-evenly'}>
-      {articles.map((article) => 
-      {return (
-        <ArticleCard heading={article?.title} coverImg={article?.coverImage} date={article?.createdAt}/>
-      )}
-      )}
-
+      <Box
+        mt={"40px"}
+        display="flex"
+        flexWrap={"wrap"}
+        justifyContent={"space-evenly"}
+      >
+        {loading
+          ? <LoadingSkeleton/>
+          : articles.map((article, index) => {
+              return (
+                <ArticleCard
+                  key={index}
+                  article={article}
+                  action={action}
+                  setAction={setAction}
+                />
+              );
+            })}
       </Box>
-
     </Box>
-  )
-}
+  );
+};
 
-export default Articles
+export default Articles;
