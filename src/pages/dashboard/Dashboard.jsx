@@ -22,7 +22,8 @@ const Dashboard = () => {
     datasets: [
       {
         label: "No of Enrollments",
-        data: events?.map((event) => event.attendees.length),
+        // data: events?.map((event) => event.attendees.length),
+        data:['10','30','15']
       },
     ],
   };
