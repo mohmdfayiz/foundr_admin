@@ -31,7 +31,7 @@ const ArticleCard = ({ article, setAction, action }) => {
   };
 
   return (
-    <Card sx={{ width: 300 }} style={{ backgroundColor: colors.primary[400] }}>
+    <Card sx={{ width: 300, m:"5px" }} style={{ backgroundColor: colors.primary[400] }}>
       <CardMedia
         component="img"
         alt="Cover image"

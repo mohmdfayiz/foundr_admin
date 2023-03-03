@@ -26,7 +26,7 @@ const Articles = () => {
         mt={"40px"}
         display="flex"
         flexWrap={"wrap"}
-        justifyContent={"space-evenly"}
+        justifyContent={"center"}
       >
         {loading
           ? <LoadingSkeleton/>

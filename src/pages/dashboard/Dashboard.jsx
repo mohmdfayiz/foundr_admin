@@ -22,8 +22,7 @@ const Dashboard = () => {
     datasets: [
       {
         label: "No of Enrollments",
-        // data: events?.map((event) => event.attendees.length),
-        data:['10','30','15']
+        data: events?.map((event) => event.attendees.length),
       },
     ],
   };
@@ -173,7 +172,7 @@ const Dashboard = () => {
           />
         </Box>
       </Box>
-      <Box sx={{maxHeight:'500px'}}>
+      <Box sx={{maxHeight:'400px'}}>
         <BarChart chartData={chartData} />
       </Box>
     </Box>
