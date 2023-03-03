@@ -36,7 +36,7 @@
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
   },
-  "proxy": "http://localhost:8000",
+  "proxy": "http://foundrserver-env.eba-muh2ntp4.ap-south-1.elasticbeanstalk.com",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
