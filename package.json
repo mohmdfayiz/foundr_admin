@@ -36,7 +36,7 @@
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
   },
-  "proxy": "http://foundrserver-env.eba-muh2ntp4.ap-south-1.elasticbeanstalk.com",
+  "proxy": "https://www.server.foundr.site/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
