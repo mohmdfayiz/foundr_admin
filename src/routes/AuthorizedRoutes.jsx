@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import Dashboard from '../pages/dashboard/Dashboard'
 import Articles from '../pages/articles/Articles'
 import Article from '../pages/articles/Article'
@@ -18,6 +18,7 @@ export default function AuthorizedRoutes(){
           <main className="content">
             <Topbar/>
             <Routes>
+              <Route path='/' exact element={<Navigate to={'/dashboard'}/>} />
               <Route path="/dashboard" element={<Dashboard/>}/>
               <Route path="/users" element={<Users/>}/>
               <Route path="/events" element={<Events/>}/>

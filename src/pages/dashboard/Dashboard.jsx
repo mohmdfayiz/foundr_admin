@@ -6,32 +6,32 @@ import EmailIcon from "@mui/icons-material/Email";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import ArticleIcon from "@mui/icons-material/Article";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
-// import { getEvents } from "../../helper/helper";
-// import { useEffect, useState } from "react";
-// // import BarChart from "../../components/BarChart";
+import { getEvents } from "../../helper/helper";
+import { useEffect, useState } from "react";
+import BarChart from "../../components/BarChart";
 
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const now = new Date();
 
-  // const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState([]);
 
-  // const chartData = {
-  //   labels: events?.map((event) => event.mentorName),
-  //   datasets: [
-  //     {
-  //       label: "No of Enrollments",
-  //       data: events?.map((event) => event.attendees.length),
-  //     },
-  //   ],
-  // };
+  const chartData = {
+    labels: events?.map((event) => event.mentorName),
+    datasets: [
+      {
+        label: "No of Enrollments",
+        data: events?.map((event) => event.attendees.length),
+      },
+    ],
+  };
 
-  // useEffect(() => {
-  //   getEvents().then((data) => {
-  //     setEvents(data);
-  //   });
-  // }, []);
+  useEffect(() => {
+    getEvents().then((data) => {
+      setEvents(data);
+    });
+  }, []);
 
   return (
     <Box m={"20px"}>
@@ -172,9 +172,9 @@ const Dashboard = () => {
           />
         </Box>
       </Box>
-      {/* <Box sx={{maxHeight:'400px'}}>
+      <Box sx={{maxHeight:'400px'}}>
         <BarChart chartData={chartData} />
-      </Box> */}
+      </Box>
     </Box>
   );
 };
