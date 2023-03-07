@@ -14,15 +14,12 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { auth } from "../../utils/firebase";
-import {
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth";
+import {signInWithEmailAndPassword,} from "firebase/auth";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {setAuthorized} from "../../features/authorizer/authSlice";
+import { toast,Toaster } from "react-hot-toast";
 
 const Signin = () => {
   const theme = useTheme();
@@ -55,50 +52,22 @@ const Signin = () => {
           navigate("/dashboard", {replace:true});
         })
         .catch((error) => {
-          const errorCode = error.code;
-          // const errorMessage = error.message;
-          alert(errorCode);
+          toast.error('Invalid credentials!')
         });
     } catch (err) {
       console.log(err);
     }
   };
 
-  const provider = new GoogleAuthProvider();
-  const googleSignin = async () => {
-    try{
-
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        // const token = credential.accessToken;
-        // The signed-in user info.
-        // const user = result.user;
-
-        dispatch(setAuthorized())
-        navigate('/dashboard')
-
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        // const errorCode = error.code;
-        const errorMessage = error.message;
-        // const email = error.customData.email;
-        console.log(errorMessage);
-      });
-
-    }catch(error){
-        console.log(error);
-    }
-    
-  };
-
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", justifyContent:"center", alignItems:"center", height:"100vh" }}>
+      <Toaster/>
       <Box
         sx={{
-          minWidth: "400px",
           p: 5,
-          height: "100vh",
+          minWidth: "400px",
+          height: "500px",
+          borderRadius:"10px",
           background: colors.primary[400],
           position: "relative",
         }}
@@ -111,9 +80,10 @@ const Signin = () => {
             style={{ cursor: "pointer" }}
           />
         </Box>
-        <Typography variant="h3" sx={{ fontWeight: "bold", mt: 5, mb: 3 }}>
+        <Typography variant="h3" sx={{ fontWeight: "bold", mt: 5 }}>
           Hello Admin 👋
         </Typography>
+        <Typography>Signin to access your account</Typography>
         <Box
           onSubmit={handleSubmit}
           component="form"
@@ -169,51 +139,9 @@ const Signin = () => {
             variant="outlined"
             size="large"
           >
-            Login
-          </Button>
-          <Typography sx={{ textAlign: "center" }}>OR</Typography>
-          <Button
-            onClick={googleSignin}
-            sx={{
-              color: colors.grey[200],
-              fontWeight: "bold",
-              padding: 2,
-              my: 2,
-              textAlign: "center",
-            }}
-            variant="outlined"
-            size="medium"
-          >
-            <img
-              src="/assets/search.png"
-              alt="google"
-              style={{ marginRight: "5px", width: "20px" }}
-            />
-            Login with Google
+            Sign in
           </Button>
         </Box>
-      </Box>
-
-      <Box
-        display={"flex"}
-        flexDirection={"column"}
-        alignItems={"center"}
-        justifyContent={"center"}
-        width={"100%"}
-        p={5}
-      >
-        <img
-          src="/assets/founders.svg"
-          alt="founders"
-          style={{ width: "35rem" }}
-        />
-        {/* <Box>
-          <Typography variant="h2">Connecting Better.</Typography>
-          <Typography veriant="h4">
-            Connect Entrepreneurs and help them to build <br /> amazing things
-            that people really want.
-          </Typography>
-        </Box> */}
       </Box>
     </Box>
   );

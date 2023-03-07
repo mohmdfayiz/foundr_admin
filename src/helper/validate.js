@@ -13,24 +13,6 @@ export async function validateEvent(values){
     return errors
 }
 
-
-
-// Cover image
-// export function coverImageVerify(coverImage){
-//     if(!coverImage){
-//        return toast.error('Article should have a cover image..!');
-//     }
-// }
-
-// Article content
-// export function contentVerify(content){
-//     if(!content){
-//         return toast.error('Article should have content..!');
-//     }else if(content.length < 100){
-//         return toast.error('Article is too short..!');
-//     }
-// }
-
 // Validate Title
 function titleVerify(error={}, values){
     if(!values.title){

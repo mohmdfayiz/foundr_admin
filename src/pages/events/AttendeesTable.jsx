@@ -76,7 +76,7 @@ const AttendiesTable = ({ attendees }) => {
                             <img
                               src={value}
                               alt="avatar"
-                              style={{ width: 40, borderRadius: "50%" }}
+                              style={{ width: 40, height:40, borderRadius: "50%", objectFit:'cover' }}
                             />
                           </TableCell>
                         );

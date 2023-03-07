@@ -6,7 +6,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import ArticleIcon from "@mui/icons-material/Article";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
-import { getEvents } from "../../helper/helper";
+import { getDashboardDetails } from "../../helper/helper";
 import { useEffect, useState } from "react";
 import BarChart from "../../components/BarChart";
 
@@ -15,6 +15,9 @@ const Dashboard = () => {
   const colors = tokens(theme.palette.mode);
   const now = new Date();
 
+  const [totalUsers, setTotalUsers] = useState(null);
+  const [upcomingEvents, setUpcomingEvents] = useState(null);
+  const [publishedArticles, setPublishedArticles] = useState(null);
   const [events, setEvents] = useState([]);
 
   const chartData = {
@@ -28,8 +31,11 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    getEvents().then((data) => {
-      setEvents(data);
+    getDashboardDetails().then(({ data }) => {
+      setTotalUsers(data.totalUsers);
+      setUpcomingEvents(data.upcomingEvents);
+      setPublishedArticles(data.publishedArticles);
+      setEvents(data.chartData);
     });
   }, []);
 
@@ -56,7 +62,8 @@ const Dashboard = () => {
               Welcome to Dashboard
             </Typography>
             <Typography sx={{ mt: "10px" }}>
-              Congratulations, You have some good newses, <br /> look into that!
+              Congratulations, You have some good newses, <br /> Let's look into
+              that!
             </Typography>
           </Box>
           <Box>
@@ -100,10 +107,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="132"
-            subtitle="New Users"
-            progress="0.75"
-            increase="+14%"
+            title={totalUsers}
+            subtitle="Total Users"
             icon={
               <GroupAddIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -120,10 +125,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="1261"
+            title="62"
             subtitle="Emails Sent"
-            progress="0.75"
-            increase="+14%"
             icon={
               <EmailIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -140,10 +143,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="36"
+            title={publishedArticles<10 ? `0${publishedArticles}` : publishedArticles}
             subtitle="Published Articles"
-            progress="0.75"
-            increase="+14%"
             icon={
               <ArticleIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -160,10 +161,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="04"
+            title={upcomingEvents <10 ? `0${upcomingEvents}`: upcomingEvents}
             subtitle="Upcoming Events"
-            progress="0.75"
-            increase="+14%"
             icon={
               <LiveTvIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -172,7 +171,7 @@ const Dashboard = () => {
           />
         </Box>
       </Box>
-      <Box sx={{maxHeight:'400px'}}>
+      <Box sx={{ maxHeight: "400px", mt: "20px" }}>
         <BarChart chartData={chartData} />
       </Box>
     </Box>

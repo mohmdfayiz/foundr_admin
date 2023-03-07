@@ -1,6 +1,16 @@
 import axios from "axios";
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN;
 
+// DASHBOARD DETAILS
+export async function getDashboardDetails() {
+    try {
+        const { data, status } = await axios.get('/api/admin/dashboardDetails')
+        return Promise.resolve({ data, status })
+    } catch (error) {
+        return Promise.reject({ error })
+    }
+}
+
 // GET ALL USERS
 export async function getUsers() {
     try {
@@ -33,12 +43,12 @@ export async function getEvents() {
 }
 
 // GET ALL ATTENDIES OF SELECTED EVENT
-export async function getAttendees(eventId){
+export async function getAttendees(eventId) {
     try {
         const { data } = await axios.get(`/api/admin/getAttendies?eventId=${eventId}`)
         return Promise.resolve(data)
     } catch (error) {
-        return Promise.reject({error})
+        return Promise.reject({ error })
     }
 }
 
@@ -56,19 +66,19 @@ export async function getArticles() {
 export async function getSingleArticle(articleId) {
     try {
         const { data, status } = await axios.get(`/api/admin/getSingleArticle?articleId=${articleId}`)
-        return Promise.resolve({data,status})
+        return Promise.resolve({ data, status })
     } catch (error) {
         return Promise.reject({ error })
     }
 }
 
 // UPDATE VISIBILITY OF ARTICLE (HIDE/PUBLISH)
-export async function updateArticleVisibility(articleId){
+export async function updateArticleVisibility(articleId) {
     try {
-        const {status} = await axios.patch(`/api/admin/updateArticleVisibility?articleId=${articleId}`)
-        return Promise.resolve({status})
+        const { status } = await axios.patch(`/api/admin/updateArticleVisibility?articleId=${articleId}`)
+        return Promise.resolve({ status })
     } catch (error) {
-        return Promise.reject({error})
+        return Promise.reject({ error })
     }
 }
 
